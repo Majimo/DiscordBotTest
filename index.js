@@ -6,7 +6,9 @@ const client = new discord.Client({
     discord.Intents.FLAGS.GUILDS,
     discord.Intents.FLAGS.GUILD_MEMBERS,
     discord.Intents.FLAGS.GUILD_MESSAGES,
+    discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
   ],
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
 
 const slashCommandsData = new SlashCommandBuilder()
@@ -23,18 +25,26 @@ client.on("ready", () => {
 // Accueil d'un nouveau membre
 client.on("guildMemberAdd", (newMember) => {
   // <@${newMember.id}>
-  const channelId = "938908141909868595"; // A adapter en fonction du salon ciblé
   client.channels.cache
-    .get(channelId)
+    .get(config.generalChannelId)
     .send(`${newMember.displayName} nous a rejoint. Bienvenue à toi !`);
 });
 
 // Départ d'un membre
 client.on("guildMemberRemove", (leavingMember) => {
-  const channelId = "938908141909868595";
   client.channels.cache
-    .get(channelId)
+    .get(config.generalChannelId)
     .send(`${leavingMember.displayName} nous a quitté... Aurevoir :'(`);
+});
+
+// Détection de réaction
+client.on("messageReactionAdd", async (reaction, user) => {
+  if (reaction.emoji.name === "😻") {
+    const channelId = reaction.message.channelId;
+    client.channels.cache
+      .get(channelId)
+      .send(`Miaouuu à toi aussi <@${user.id}> ! 😻 😻 😻`);
+  }
 });
 
 // Prefix messages
