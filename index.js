@@ -25,15 +25,21 @@ client.on("ready", () => {
 // Accueil d'un nouveau membre
 client.on("guildMemberAdd", (newMember) => {
   // <@${newMember.id}>
+  const principalTextChannel = Array.from(client.channels.cache).find(
+    (t) => t[1].type === "GUILD_TEXT"
+  );
   client.channels.cache
-    .get(config.generalChannelId)
+    .get(principalTextChannel)
     .send(`${newMember.displayName} nous a rejoint. Bienvenue à toi !`);
 });
 
 // Départ d'un membre
 client.on("guildMemberRemove", (leavingMember) => {
+  const principalTextChannel = Array.from(client.channels.cache).find(
+    (t) => t[1].type === "GUILD_TEXT"
+  );
   client.channels.cache
-    .get(config.generalChannelId)
+    .get(principalTextChannel)
     .send(`${leavingMember.displayName} nous a quitté... Aurevoir :'(`);
 });
 
